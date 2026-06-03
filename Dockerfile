@@ -1,19 +1,19 @@
 # ----- Stage 1: build the app with webpack -----
-# Start from the Node.js 19 Alpine image and name this stage "build"
-# so the second stage can copy files out of it by name.
-FROM node:19-alpine AS build
+# Use an active LTS Node.js image so CRA/webpack dependencies run on a
+# supported runtime. Name this stage "build" so nginx can copy from it.
+FROM node:20-alpine AS build
 
 # Set /app as the working directory inside the container.
 # Subsequent commands run relative to this path; Docker creates it if needed.
 WORKDIR /app
 
-# Copy only package.json first (the "." is the WORKDIR, i.e. /app).
-# Copying it before the rest of the code lets Docker cache the next
-# step so dependencies are only reinstalled when package.json changes.
-COPY package.json .
+# Copy package metadata first so Docker can cache dependency installs.
+# Including package-lock.json keeps the image build on the same dependency
+# graph tested by Jenkins before the Docker build starts.
+COPY package.json package-lock.json ./
 
-# Install all dependencies into node_modules.
-RUN npm install
+# Install the exact locked dependency graph for reproducible CI builds.
+RUN npm ci
 
 # Now copy the rest of the source code into /app.
 # Done after npm install so editing code doesn't invalidate the cache layer above.

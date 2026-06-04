@@ -1,0 +1,11 @@
+{
+  "name": "nopublicssh",
+  "file": "ssh_rule.rego",
+  "policy_type": "gcp",
+  "resource_type": "google_compute_firewall",
+  "severity": "HIGH",
+  "description": "It is recommended that no security group allows unrestricted SSH access",
+  "category": "NETWORK_SECURITY",
+  "version": 1,
+  "id": "AC_GCP_1000"
+}

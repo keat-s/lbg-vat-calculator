@@ -98,15 +98,21 @@
   },
   "hotPaths": [
     {
+      "path": "Jenkinsfile",
+      "accessCount": 5,
+      "lastAccessed": 1780567126468,
+      "type": "file"
+    },
+    {
       "path": "main.tf",
       "accessCount": 4,
       "lastAccessed": 1780566250693,
       "type": "file"
     },
     {
-      "path": "Jenkinsfile",
-      "accessCount": 3,
-      "lastAccessed": 1780565960765,
+      "path": "AC_GCP_1000.json",
+      "accessCount": 1,
+      "lastAccessed": 1780567209073,
       "type": "file"
     }
   ],

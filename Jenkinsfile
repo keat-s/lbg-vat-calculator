@@ -16,7 +16,7 @@ pipeline {
         // Holds the built image object; populated in the Build stage.
         dockerImage = ""
         // Terraform variables (TF_VAR_* are auto-read by Terraform).
-        TF_VAR_gcp_project = "<your project ID from qwiklabs>"
+        TF_VAR_gcp_project = "qwiklabs-gcp-02-11432a5f9c60" //changes every time you do a lab
         TF_VAR_docker_registry = "${registry}"
     }
 

@@ -60,7 +60,7 @@ resource "google_compute_firewall" "default" {
   name          = "server-firewall"
   network       = "default"
   direction     = "INGRESS"
-  source_ranges = ["0.0.0.0/0"]
+  source_ranges = ["10.0.0.1/16"]
 
   # Allow ICMP (ping).
   allow {

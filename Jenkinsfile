@@ -1,41 +1,47 @@
+// Declarative pipeline: build, test, push the VAT calculator image, then provision infra.
 pipeline {
-    // Run this pipeline on any available Jenkins agent.
+    // Run on any available Jenkins agent/node.
     agent any
 
+    // Pipeline-wide environment variables (also exported to shell steps).
     environment {
-        // Load Docker Hub credentials stored in Jenkins as "dockerhub_login".
+        // Jenkins credential ID for the GCP service-account key file.
+        gcpCreds = 'gcp_credentials'
+        // Docker Hub login; exposes dockerCreds_USR and dockerCreds_PSW.
         dockerCreds = credentials('dockerhub_login')
-
-        // Build the target Docker image name from the Docker Hub username.
+        // Target image repo: <dockerhub-user>/vatcal.
         registry = "${dockerCreds_USR}/vatcal"
+        // Credential ID used when authenticating to the registry on push.
         registryCredentials = "dockerhub_login"
-
-        // Holds the built Docker image so later stages can push it.
+        // Holds the built image object; populated in the Build stage.
         dockerImage = ""
+        // Terraform variables (TF_VAR_* are auto-read by Terraform).
+        TF_VAR_gcp_project = "<your project ID from qwiklabs>"
+        TF_VAR_docker_registry = "${registry}"
     }
 
     stages {
+        // Install deps and run the test suite; fails the build on test failure.
         stage('Run Tests') {
             steps {
-                // Install dependencies and run the test suite in CI mode.
                 sh 'npm install'
                 sh 'CI=true npm test'
             }
         }
 
+        // Build the Docker image from the repo Dockerfile.
         stage('Build Image') {
             steps {
                 script {
-                    // Build the Docker image from the repository Dockerfile.
                     dockerImage = docker.build(registry)
                 }
             }
         }
 
+        // Push the image to the registry under build-number and 'latest' tags.
         stage('Push Image') {
             steps {
                 script {
-                    // Authenticate to Docker Hub and publish both immutable and latest tags.
                     docker.withRegistry("", registryCredentials) {
                         dockerImage.push("${env.BUILD_NUMBER}")
                         dockerImage.push("latest")
@@ -44,10 +50,25 @@ pipeline {
             }
         }
 
+        // Reclaim disk: remove all images older than 48h.
         stage('Clean Up') {
             steps {
-                // Remove old local Docker images from the Jenkins agent to save disk space.
                 sh "docker image prune --all --force --filter 'until=48h'"
+            }
+        }
+
+        // Provision/update infrastructure with Terraform using the GCP creds.
+        stage('Provision Server') {
+            steps {
+                script {
+                    withCredentials([file(credentialsId: gcpCreds, variable: 'GCP_CREDENTIALS')]) {
+                        sh '''
+                            export GOOGLE_APPLICATION_CREDENTIALS=$GCP_CREDENTIALS
+                            terraform init
+                            terraform apply -auto-approve
+                        '''
+                    }
+                }
             }
         }
     }

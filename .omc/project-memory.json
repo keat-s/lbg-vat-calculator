@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1780477394029,
+  "lastScanned": 1780565903401,
   "projectRoot": "/Users/keaton/dev/qa-devops/lbg-vat-calculator",
   "techStack": {
     "languages": [
@@ -60,11 +60,20 @@
   },
   "customNotes": [],
   "directoryMap": {
+    "force_commit": {
+      "path": "force_commit",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1780565903393,
+      "keyFiles": [
+        "031145.txt"
+      ]
+    },
     "public": {
       "path": "public",
       "purpose": "Public files",
       "fileCount": 6,
-      "lastAccessed": 1780477394017,
+      "lastAccessed": 1780565903394,
       "keyFiles": [
         "favicon.ico",
         "index.html",
@@ -77,7 +86,7 @@
       "path": "src",
       "purpose": "Source code",
       "fileCount": 12,
-      "lastAccessed": 1780477394018,
+      "lastAccessed": 1780565903397,
       "keyFiles": [
         "App.css",
         "App.js",
@@ -87,6 +96,13 @@
       ]
     }
   },
-  "hotPaths": [],
+  "hotPaths": [
+    {
+      "path": "Jenkinsfile",
+      "accessCount": 3,
+      "lastAccessed": 1780565960765,
+      "type": "file"
+    }
+  ],
   "userDirectives": []
 }
